@@ -13,7 +13,7 @@
 在仓库根目录执行：
 
 ```bash
-python wuwa_achievement/Tools/build_achievement_tracker_zh_from_dbs.py \
+python -m Tools \
 	--config-db /path/to/db_achievement.db \
 	--multitext-db /path/to/lang_multi_text.db \
 	--multitext-db /path/to/lang_multi_text_1sthalf.db \
@@ -36,7 +36,7 @@ python wuwa_achievement/Tools/build_achievement_tracker_zh_from_dbs.py \
 1. 先生成页面到 `docs/`：
 
 ```bash
-python Tools/build_achievement_tracker_zh_from_dbs.py \
+python -m Tools \
 	--config-db /path/to/db_achievement.db \
 	--multitext-db /path/to/lang_multi_text.db \
 	--out docs/achievement_tracker_zh.html
