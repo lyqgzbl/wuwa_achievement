@@ -129,7 +129,7 @@ def render_html(dataset: dict[str, Any]) -> str:
       margin-left: 8px; vertical-align: middle;
     }}
     .summary-progress-inner {{
-      height: 100%; border-radius: 3px;
+      display: block; height: 100%; border-radius: 3px;
       background: var(--progress-fill);
       transition: width .3s ease, background .3s ease;
     }}
