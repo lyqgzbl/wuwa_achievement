@@ -9,261 +9,344 @@ from typing import Any
 def render_html(dataset: dict[str, Any]) -> str:
     dataset_json = json.dumps(dataset, ensure_ascii=False).replace("</", r"<\/")
 
-    # Single-file offline HTML with enhanced UI.
     return f"""<!doctype html>
-<html lang=\"zh-CN\" data-theme=\"auto\">
+<html lang="zh-CN" data-theme="auto">
 <head>
-  <meta charset=\"utf-8\" />
-  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>鸣潮 成就统计</title>
   <style>
     /* === Theme variables === */
-    :root,
-    [data-theme=\"light\"] {{
-      --bg: #f5f5f7;
-      --text: #1d1d1f;
-      --text-muted: #6e6e73;
+    :root, [data-theme="light"] {{
+      /* 基础背景 (极浅暖灰, 让页面不显得冷冰冰) */
+      --bg: #fafafa;
+      --bg-alpha: rgba(250, 250, 250, 0.65);
+
+      /* 文字颜色 (深炭灰 & 柔和灰) */
+      --text: #2d3748;
+      --text-muted: #718096;
+
+      /* 卡片背景 (纯白, 用于区分层级) */
       --card-bg: #ffffff;
-      --card-hover: #fafafa;
-      --border: rgba(0,0,0,.08);
-      --summary-bg: #eef0f4;
-      --summary-hover: #e2e5eb;
-      --accent: #3b82f6;
-      --accent-light: #dbeafe;
-      --progress-bg: #e5e7eb;
-      --progress-fill: #3b82f6;
-      --progress-full: #22c55e;
-      --mark-bg: #fef08a;
-      --mark-text: #1d1d1f;
+      --card-hover: #f7fafc;
+      --border: rgba(0, 0, 0, 0.06);
+
+      /* 标题区与折叠栏 */
+      --summary-bg: #ffffff;
+      --summary-hover: #f1f5f9;
+
+      /* 强调色：蓝紫渐变/活力蓝 (鸣潮/数据感) */
+      --accent: #4f46e5;
+      --accent-light: rgba(79, 70, 229, 0.1);
+
+      /* 进度条：从灰到活力蓝紫到碧绿 */
+      --progress-bg: #e2e8f0;
+      --progress-fill: linear-gradient(90deg, #6366f1, #4f46e5);
+      --progress-full: linear-gradient(90deg, #10b981, #059669);
+
+      /* 搜索高亮：柔和的柠檬黄 */
+      --mark-bg: #fde047;
+      --mark-text: #854d0e;
+
+      /* 按钮与输入框 */
       --btn-bg: #ffffff;
-      --btn-hover: #f0f0f2;
-      --btn-border: rgba(0,0,0,.15);
+      --btn-hover: #f8fafc;
+      --btn-border: rgba(0, 0, 0, 0.1);
       --input-bg: #ffffff;
-      --input-border: rgba(0,0,0,.12);
-      --done-opacity: 0.45;
+      --input-border: rgba(0, 0, 0, 0.1);
+
+      /* 其他UI状态 */
+      --done-opacity: 0.55;
+      --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.02);
+      --shadow-md: 0 8px 16px -4px rgba(0, 0, 0, 0.05), 0 4px 8px -2px rgba(0, 0, 0, 0.02);
+      --badge-bg: rgba(79, 70, 229, 0.1);
+      --badge-text: #4f46e5;
+      --card-gradient: linear-gradient(145deg, #ffffff, #fafafa);
       color-scheme: light;
     }}
-    [data-theme=\"dark\"] {{
-      --bg: #1a1a2e;
-      --text: #e4e4e7;
-      --text-muted: #9ca3af;
-      --card-bg: #242440;
-      --card-hover: #2a2a4a;
-      --border: rgba(255,255,255,.08);
-      --summary-bg: #2d2d50;
-      --summary-hover: #363660;
-      --accent: #60a5fa;
-      --accent-light: rgba(96,165,250,.15);
-      --progress-bg: #374151;
-      --progress-fill: #60a5fa;
-      --progress-full: #4ade80;
-      --mark-bg: #854d0e;
+    [data-theme="dark"] {{
+      /* 基础背景 (极暗的蓝灰, 增加深邃感) */
+      --bg: #0f172a;
+      --bg-alpha: rgba(15, 23, 42, 0.65);
+
+      /* 文字颜色 (亮灰 & 暗灰) */
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+
+      /* 卡片背景 (带微弱蓝调的深色) */
+      --card-bg: #1e293b;
+      --card-hover: #27344c;
+      --border: rgba(255, 255, 255, 0.06);
+
+      /* 标题区与折叠栏 */
+      --summary-bg: #1e293b;
+      --summary-hover: #2b3b54;
+
+      /* 强调色：赛博青/霓虹蓝 (契合鸣潮科幻风) */
+      --accent: #38bdf8;
+      --accent-light: rgba(56, 189, 248, 0.15);
+
+      /* 进度条：从深灰到亮青到荧光绿 */
+      --progress-bg: #334155;
+      --progress-fill: linear-gradient(90deg, #0ea5e9, #38bdf8);
+      --progress-full: linear-gradient(90deg, #22c55e, #4ade80);
+
+      /* 搜索高亮：柔和的橙棕色背景配亮黄字 */
+      --mark-bg: #b45309;
       --mark-text: #fef08a;
-      --btn-bg: #2d2d50;
-      --btn-hover: #363660;
-      --btn-border: rgba(255,255,255,.12);
-      --input-bg: #242440;
-      --input-border: rgba(255,255,255,.12);
-      --done-opacity: 0.35;
+
+      /* 按钮与输入框 */
+      --btn-bg: #1e293b;
+      --btn-hover: #293952;
+      --btn-border: rgba(255, 255, 255, 0.1);
+      --input-bg: #0f172a;
+      --input-border: rgba(255, 255, 255, 0.1);
+
+      /* 其他UI状态 */
+      --done-opacity: 0.45;
+      --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 10px 20px -5px rgba(0, 0, 0, 0.4), 0 6px 10px -3px rgba(0, 0, 0, 0.2);
+      --badge-bg: rgba(56, 189, 248, 0.15);
+      --badge-text: #38bdf8;
+      --card-gradient: linear-gradient(145deg, #1e293b, #151e2f);
       color-scheme: dark;
     }}
     @media (prefers-color-scheme: dark) {{
-      [data-theme=\"auto\"] {{
-        --bg: #1a1a2e;
-        --text: #e4e4e7;
-        --text-muted: #9ca3af;
-        --card-bg: #242440;
-        --card-hover: #2a2a4a;
-        --border: rgba(255,255,255,.08);
-        --summary-bg: #2d2d50;
-        --summary-hover: #363660;
-        --accent: #60a5fa;
-        --accent-light: rgba(96,165,250,.15);
-        --progress-bg: #374151;
-        --progress-fill: #60a5fa;
-        --progress-full: #4ade80;
-        --mark-bg: #854d0e;
-        --mark-text: #fef08a;
-        --btn-bg: #2d2d50;
-        --btn-hover: #363660;
-        --btn-border: rgba(255,255,255,.12);
-        --input-bg: #242440;
-        --input-border: rgba(255,255,255,.12);
-        --done-opacity: 0.35;
-        color-scheme: dark;
+      [data-theme="auto"] {{
+        --bg: #0f172a; --bg-alpha: rgba(15, 23, 42, 0.65); --text: #f1f5f9; --text-muted: #94a3b8;
+        --card-bg: #1e293b; --card-hover: #27344c; --border: rgba(255, 255, 255, 0.06);
+        --summary-bg: #1e293b; --summary-hover: #2b3b54; --accent: #38bdf8; --accent-light: rgba(56, 189, 248, 0.15);
+        --progress-bg: #334155; --progress-fill: linear-gradient(90deg, #0ea5e9, #38bdf8); --progress-full: linear-gradient(90deg, #22c55e, #4ade80);
+        --mark-bg: #b45309; --mark-text: #fef08a; --btn-bg: #1e293b; --btn-hover: #293952;
+        --btn-border: rgba(255, 255, 255, 0.1); --input-bg: #0f172a; --input-border: rgba(255, 255, 255, 0.1);
+        --done-opacity: 0.45; --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.3); --shadow-md: 0 10px 20px -5px rgba(0, 0, 0, 0.4), 0 6px 10px -3px rgba(0, 0, 0, 0.2);
+        --badge-bg: rgba(56, 189, 248, 0.15); --badge-text: #38bdf8;
+        --card-gradient: linear-gradient(145deg, #1e293b, #151e2f); color-scheme: dark;
       }}
     }}
 
     /* === Base === */
     * {{ box-sizing: border-box; }}
     body {{
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial,
-                   'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-      margin: 0; padding: 24px 16px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, 'PingFang SC', sans-serif;
+      margin: 0; padding: 0 16px 24px 16px;
       background: var(--bg); color: var(--text);
-      line-height: 1.6;
-      transition: background .2s, color .2s;
+      line-height: 1.5;
+      transition: background 0.5s ease, color 0.5s ease;
+      -webkit-font-smoothing: antialiased;
     }}
-    .container {{ max-width: 820px; margin: 0 auto; }}
+    .container {{ max-width: 820px; margin: 0 auto; position: relative; }}
+
+    /* === Sticky Header Wrapper === */
+    .sticky-wrapper {{
+      position: sticky; top: 0; z-index: 100;
+      background: var(--bg-alpha);
+      backdrop-filter: blur(24px) saturate(200%); -webkit-backdrop-filter: blur(24px) saturate(200%);
+      margin: 0 -16px 20px -16px; padding: 16px 16px 12px 16px;
+      border-bottom: 1px solid var(--border);
+    }}
+    .sticky-container {{ max-width: 820px; margin: 0 auto; }}
 
     /* === Header === */
-    header {{ display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }}
-    header h2 {{ margin: 0; font-size: 22px; font-weight: 700; }}
+    header {{ display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }}
+    header h2 {{ margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }}
     .overall-wrap {{ display: flex; align-items: center; gap: 12px; flex: 1; min-width: 200px; }}
-    .overall-text {{ font-variant-numeric: tabular-nums; color: var(--text-muted); font-size: 14px; white-space: nowrap; }}
+    .overall-text {{ font-variant-numeric: tabular-nums; font-size: 14px; font-weight: 500; white-space: nowrap; }}
 
     /* === Progress bars === */
     .progress-bar {{
       flex: 1; height: 8px; min-width: 80px;
-      background: var(--progress-bg); border-radius: 4px; overflow: hidden;
+      background: var(--progress-bg); border-radius: 999px; overflow: hidden;
     }}
     .progress-bar-inner {{
-      height: 100%; border-radius: 4px;
-      background: var(--progress-fill);
-      transition: width .3s ease, background .3s ease;
+      height: 100%; border-radius: 999px; background: var(--progress-fill);
+      transition: width 0.8s ease-out, background 0.5s ease;
     }}
     .progress-bar-inner.full {{ background: var(--progress-full); }}
     .summary-progress {{
-      display: inline-block; width: 80px; height: 6px;
-      background: var(--progress-bg); border-radius: 3px; overflow: hidden;
+      display: inline-block; width: 64px; height: 6px;
+      background: var(--progress-bg); border-radius: 999px; overflow: hidden;
       margin-left: 8px; vertical-align: middle;
     }}
     .summary-progress-inner {{
-      display: block; height: 100%; border-radius: 3px;
-      background: var(--progress-fill);
-      transition: width .3s ease, background .3s ease;
+      display: block; height: 100%; border-radius: 999px; background: var(--progress-fill);
+      transition: width 0.8s ease-out, background 0.5s ease;
     }}
     .summary-progress-inner.full {{ background: var(--progress-full); }}
 
     /* === Toolbar === */
-    .toolbar {{
-      display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
-      padding: 12px 16px; margin-bottom: 16px;
-      background: var(--card-bg); border: 1px solid var(--border);
-      border-radius: 12px;
+    .toolbar {{ display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }}
+
+    .search-wrap {{ position: relative; flex: 1; min-width: 200px; }}
+    .search-icon {{
+      position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+      color: var(--text-muted); pointer-events: none;
     }}
-    input[type=\"search\"] {{
-      flex: 1; min-width: 180px; padding: 8px 14px;
-      border: 1px solid var(--input-border); border-radius: 8px;
-      background: var(--input-bg); color: var(--text);
-      font-size: 14px; outline: none;
-      transition: border-color .15s;
+    input[type="search"] {{
+      width: 100%; padding: 10px 14px 10px 36px;
+      border: 1px solid var(--input-border); border-radius: 10px;
+      background: var(--input-bg); color: var(--text); font-size: 14px; outline: none;
+      transition: all 0.3s ease; box-shadow: var(--shadow-sm);
     }}
-    input[type=\"search\"]:focus {{ border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); }}
-    input[type=\"search\"]::placeholder {{ color: var(--text-muted); }}
+    input[type="search"]:focus {{
+      border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light);
+    }}
+    input[type="search"]::placeholder {{ color: var(--text-muted); }}
 
     .pill {{
-      display: inline-flex; align-items: center; gap: 4px;
-      padding: 6px 12px; border: 1px solid var(--btn-border); border-radius: 999px;
-      background: var(--btn-bg); color: var(--text); font-size: 13px;
-      cursor: pointer; user-select: none; transition: background .15s;
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 14px; border: 1px solid var(--btn-border); border-radius: 999px;
+      background: var(--btn-bg); color: var(--text); font-size: 14px; font-weight: 500;
+      cursor: pointer; user-select: none; transition: all 0.3s ease;
+      box-shadow: var(--shadow-sm);
     }}
-    .pill:hover {{ background: var(--btn-hover); }}
-    .pill input[type=\"checkbox\"] {{ margin: 0; }}
+    .pill:hover {{ background: var(--btn-hover); border-color: var(--text-muted); }}
+    .pill input[type="checkbox"] {{ margin: 0; accent-color: var(--accent); width: 16px; height: 16px; cursor: pointer; pointer-events: none; }}
 
     .btn {{
-      padding: 6px 14px; border: 1px solid var(--btn-border); border-radius: 8px;
-      background: var(--btn-bg); color: var(--text); font-size: 13px;
-      cursor: pointer; transition: background .15s;
+      padding: 8px 14px; border: 1px solid var(--btn-border); border-radius: 10px;
+      background: var(--btn-bg); color: var(--text); font-size: 14px; font-weight: 500;
+      cursor: pointer; transition: all 0.3s ease; box-shadow: var(--shadow-sm);
     }}
-    .btn:hover {{ background: var(--btn-hover); }}
+    .btn:hover {{ background: var(--btn-hover); border-color: var(--text-muted); }}
+
     .btn-icon {{
-      padding: 6px 8px; border: 1px solid var(--btn-border); border-radius: 8px;
-      background: var(--btn-bg); color: var(--text); font-size: 16px;
-      cursor: pointer; transition: background .15s; line-height: 1;
+      width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center;
+      border: 1px solid var(--btn-border); border-radius: 10px;
+      background: var(--btn-bg); color: var(--text); font-size: 18px;
+      cursor: pointer; transition: all 0.3s ease; box-shadow: var(--shadow-sm);
     }}
-    .btn-icon:hover {{ background: var(--btn-hover); }}
+    .btn-icon:hover {{ background: var(--btn-hover); border-color: var(--text-muted); }}
 
-    .toolbar-hint {{ color: var(--text-muted); font-size: 12px; }}
-
-    /* === Tree === */
+    /* === Tree & Accordion === */
     .tree {{ list-style: none; padding: 0; margin: 0; }}
-    .tree > li {{ margin-bottom: 12px; }}
+    .tree > li {{ margin-bottom: 16px; }}
 
-    details {{ margin: 0; }}
+    details {{ margin: 0; border: 1px solid var(--border); border-radius: 14px; background: var(--summary-bg); box-shadow: var(--shadow-sm); overflow: hidden; transition: box-shadow 0.3s ease, border-color 0.3s ease; }}
+    details:hover {{ box-shadow: var(--shadow-md); border-color: var(--accent-light); }}
     summary {{
       cursor: pointer; user-select: none; list-style: none;
-      padding: 10px 14px; border-radius: 10px;
-      background: var(--summary-bg); font-weight: 600; font-size: 15px;
-      display: flex; align-items: center; gap: 8px;
-      transition: background .15s;
+      padding: 14px 18px; font-weight: 600; font-size: 16px;
+      display: flex; align-items: center; gap: 10px; transition: background 0.3s ease;
     }}
     summary:hover {{ background: var(--summary-hover); }}
     summary::-webkit-details-marker {{ display: none; }}
-    summary::before {{
-      content: '\\25B8'; display: inline-block; width: 1em; text-align: center;
-      transition: transform .15s;
-    }}
-    details[open] > summary::before {{ transform: rotate(90deg); }}
-    .summary-text {{ flex: 1; }}
-    .summary-count {{ font-size: 13px; font-weight: 400; color: var(--text-muted); white-space: nowrap; }}
 
-    .node {{ margin-left: 16px; margin-top: 8px; }}
-    .node details {{ margin-bottom: 6px; }}
-    .node summary {{ font-size: 14px; padding: 8px 12px; border-radius: 8px; }}
+    .chevron {{
+      width: 20px; height: 20px; flex-shrink: 0; color: var(--text-muted);
+      transition: transform 0.4s ease;
+    }}
+    details[open] > summary .chevron {{ transform: rotate(90deg); }}
+
+    .summary-text {{ flex: 1; }}
+    .summary-count {{
+      font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums;
+      background: var(--badge-bg); color: var(--badge-text);
+      padding: 2px 8px; border-radius: 999px; white-space: nowrap;
+    }}
+
+    .node {{ border-top: 1px solid var(--border); background: var(--bg); padding: 12px; }}
+    .node details {{ margin-bottom: 8px; border-radius: 12px; box-shadow: none; border-color: var(--border); }}
+    .node details:last-child {{ margin-bottom: 0; }}
+    .node summary {{ font-size: 15px; padding: 10px 14px; }}
 
     /* === Achievement list === */
-    .ach-list {{ list-style: none; padding: 6px 0 6px 12px; margin: 0; }}
+    .ach-list {{ list-style: none; padding: 8px; margin: 0; background: var(--bg); }}
     .ach-item {{
-      display: grid; grid-template-columns: 24px 1fr; gap: 10px;
-      padding: 10px 12px; margin: 4px 0;
-      border-radius: 8px; background: var(--card-bg);
-      border: 1px solid var(--border);
-      transition: background .15s, opacity .2s;
+      display: flex; gap: 14px; padding: 14px; margin-bottom: 8px;
+      border-radius: 12px; background: var(--card-gradient); border: 1px solid var(--border);
+      transition: all 0.4s ease; cursor: pointer;
+      position: relative; overflow: hidden;
     }}
-    .ach-item:hover {{ background: var(--card-hover); }}
-    .ach-item input[type=\"checkbox\"] {{
-      width: 18px; height: 18px; margin-top: 2px;
-      accent-color: var(--accent); cursor: pointer;
+    .ach-item:last-child {{ margin-bottom: 0; }}
+    .ach-item:hover {{ transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--accent-light); }}
+
+    /* Custom Checkbox Animation */
+    .ach-item-checkbox {{
+      flex-shrink: 0; width: 22px; height: 22px; margin-top: 2px;
+      border: 2px solid var(--text-muted); border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.3s ease; background: var(--card-bg);
     }}
-    .ach-title {{ font-weight: 600; font-size: 14px; }}
-    .ach-desc {{ font-size: 13px; color: var(--text-muted); white-space: pre-wrap; margin-top: 2px; }}
+    .ach-item-checkbox svg {{
+      width: 14px; height: 14px; color: white; opacity: 0; transform: scale(0.5);
+      transition: all 0.4s ease;
+    }}
+    .ach-item.done .ach-item-checkbox {{ background: var(--accent); border-color: var(--accent); }}
+    .ach-item.done .ach-item-checkbox svg {{ opacity: 1; transform: scale(1); }}
+
+    .ach-content {{ flex: 1; transition: opacity 0.4s ease; }}
+    .ach-title {{ font-weight: 600; font-size: 15px; transition: color 0.4s ease; }}
+    .ach-desc {{ font-size: 13px; color: var(--text-muted); white-space: pre-wrap; margin-top: 4px; line-height: 1.5; }}
 
     /* === Done state === */
-    .ach-item.done {{ opacity: var(--done-opacity); }}
-    .ach-item.done .ach-title {{ text-decoration: line-through; }}
+    .ach-item.done {{ background: var(--card-bg); opacity: var(--done-opacity); box-shadow: none; border-color: transparent; }}
+    .ach-item.done:hover {{ transform: none; box-shadow: none; border-color: transparent; }}
+    .ach-item.done .ach-title {{ text-decoration: line-through; color: var(--text-muted); }}
 
     /* === Search highlight === */
-    mark {{
-      background: var(--mark-bg); color: var(--mark-text);
-      border-radius: 2px; padding: 0 1px;
+    mark {{ background: var(--mark-bg); color: var(--mark-text); border-radius: 3px; padding: 0 2px; font-weight: 500; }}
+
+    /* === Scroll to Top === */
+    .scroll-top {{
+      position: fixed; bottom: 24px; right: 24px; z-index: 90;
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--bg-alpha); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--border); color: var(--text);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; opacity: 0; transform: translateY(20px) scale(0.9); pointer-events: none;
+      transition: all 0.4s ease; box-shadow: var(--shadow-md);
     }}
+    .scroll-top.visible {{ opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }}
+    .scroll-top:hover {{ background: var(--btn-hover); transform: translateY(-2px) scale(1.05); }}
 
     /* === Mobile === */
     @media (max-width: 600px) {{
-      body {{ padding: 12px 8px; }}
-      .toolbar {{ padding: 10px 10px; gap: 6px; }}
-      input[type=\"search\"] {{ min-width: 0; width: 100%; }}
-      summary {{ padding: 8px 10px; font-size: 14px; }}
-      .node {{ margin-left: 10px; }}
-      .ach-item {{ padding: 8px 8px; gap: 8px; }}
-      .ach-list {{ padding-left: 4px; }}
-      .summary-progress {{ width: 60px; }}
+      .sticky-wrapper {{ margin: 0 -16px 16px -16px; padding: 12px 16px; }}
+      .toolbar {{ gap: 8px; }}
+      .search-wrap {{ width: 100%; min-width: 100%; flex: none; }}
+      .pill, .btn {{ flex: 1; justify-content: center; padding: 8px 10px; font-size: 13px; }}
+      .btn-icon {{ flex-shrink: 0; }}
+      summary {{ padding: 12px 14px; font-size: 15px; }}
+      .node {{ padding: 8px; }}
+      .ach-item {{ padding: 12px; gap: 10px; }}
+      .ach-list {{ padding: 4px; }}
+      .summary-progress {{ width: 48px; }}
+      .scroll-top {{ bottom: 16px; right: 16px; width: 40px; height: 40px; }}
     }}
   </style>
 </head>
 <body>
-  <div class=\"container\">
-  <header>
-    <h2>成就统计</h2>
-    <div class=\"overall-wrap\">
-      <span id=\"overall\" class=\"overall-text\"></span>
-      <div class=\"progress-bar\"><div id=\"overallBar\" class=\"progress-bar-inner\"></div></div>
+  <div class="sticky-wrapper">
+    <div class="sticky-container">
+      <header>
+        <h2>成就统计</h2>
+        <div class="overall-wrap">
+          <span id="overall" class="overall-text"></span>
+          <div class="progress-bar"><div id="overallBar" class="progress-bar-inner"></div></div>
+        </div>
+        <button id="themeBtn" class="btn-icon" type="button" title="切换主题"></button>
+      </header>
+      <div class="toolbar">
+        <div class="search-wrap">
+          <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input id="q" type="search" placeholder="搜索成就名称或描述..." />
+        </div>
+        <label class="pill" style="cursor: pointer;"><input id="onlyTodo" type="checkbox" style="pointer-events: auto;" /> 仅未完成</label>
+        <button id="exportBtn" class="btn" type="button">导出</button>
+        <button id="importBtn" class="btn" type="button">导入</button>
+        <input id="importFile" type="file" accept="application/json" style="display:none" />
+      </div>
     </div>
-    <button id=\"themeBtn\" class=\"btn-icon\" type=\"button\" title=\"切换主题\"></button>
-  </header>
-
-  <div class=\"toolbar\">
-    <input id=\"q\" type=\"search\" placeholder=\"搜索成就名称/描述...\" />
-    <label class=\"pill\"><input id=\"onlyTodo\" type=\"checkbox\" /> 仅未完成</label>
-    <button id=\"exportBtn\" class=\"btn\" type=\"button\">导出</button>
-    <button id=\"importBtn\" class=\"btn\" type=\"button\">导入</button>
-    <input id=\"importFile\" type=\"file\" accept=\"application/json\" style=\"display:none\" />
-    <span class=\"toolbar-hint\">进度保存在浏览器本地</span>
   </div>
 
-  <div id=\"app\"></div>
+  <div class="container">
+    <div id="app"></div>
   </div>
+
+  <button id="scrollTopBtn" class="scroll-top" aria-label="返回顶部" title="返回顶部">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+  </button>
 
 <script>
 const DATA = {dataset_json};
@@ -273,8 +356,13 @@ const OPEN_GRP_KEY = 'ww_achievement_open_groups_v1';
 const EXPORT_KEY = 'ww_achievement_export_v1';
 const THEME_KEY = 'ww_achievement_theme_v1';
 
+const CHEVRON_SVG = `<svg class="chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
+const CHECK_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+
 /* === Theme toggle === */
-const THEME_ICONS = {{ auto: '\u2600\uFE0F/\U0001F319', light: '\u2600\uFE0F', dark: '\U0001F319' }};
+const THEME_ICONS = {{ auto: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>`,
+                       light: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`,
+                       dark: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>` }};
 const THEME_CYCLE = ['auto', 'light', 'dark'];
 
 function getTheme() {{
@@ -283,7 +371,7 @@ function getTheme() {{
 
 function applyTheme(theme) {{
   document.documentElement.setAttribute('data-theme', theme);
-  document.getElementById('themeBtn').textContent = THEME_ICONS[theme] || THEME_ICONS.auto;
+  document.getElementById('themeBtn').innerHTML = THEME_ICONS[theme] || THEME_ICONS.auto;
   localStorage.setItem(THEME_KEY, theme);
 }}
 
@@ -332,7 +420,7 @@ function saveOpenSet(key, set) {{
 function exportProgress() {{
     const payload = {{
         schema: EXPORT_KEY,
-        locale: DATA.locale,
+        locale: DATA.locale || 'zh-CN',
         exportedAt: new Date().toISOString(),
         completed: Array.from(loadCompleted()),
         openCategories: Array.from(loadOpenSet(OPEN_CAT_KEY)),
@@ -452,148 +540,171 @@ function makeProgressSpan(done, total) {{
 /* === Main render === */
 function render() {{
   const completed = loadCompleted();
-    const openCats = loadOpenSet(OPEN_CAT_KEY);
-    const openGrps = loadOpenSet(OPEN_GRP_KEY);
+  const openCats = loadOpenSet(OPEN_CAT_KEY);
+  const openGrps = loadOpenSet(OPEN_GRP_KEY);
   const q = (document.getElementById('q').value || '').trim().toLowerCase();
   const onlyTodo = document.getElementById('onlyTodo').checked;
 
-  const counts = computeCounts(DATA.categories, completed);
-    document.getElementById('overall').textContent = '\u5df2\u5b8c\u6210 ' + counts.done + ' / ' + counts.total;
-    const overallBar = document.getElementById('overallBar');
-    const overallPct = counts.total > 0 ? (counts.done / counts.total * 100) : 0;
-    overallBar.style.width = overallPct + '%';
-    overallBar.className = 'progress-bar-inner' + (counts.done === counts.total && counts.total > 0 ? ' full' : '');
+  const counts = computeCounts(DATA.categories || [], completed);
+  document.getElementById('overall').textContent = counts.done + ' / ' + counts.total;
+  const overallBar = document.getElementById('overallBar');
+  const overallPct = counts.total > 0 ? (counts.done / counts.total * 100) : 0;
+  overallBar.style.width = overallPct + '%';
+  if (counts.done === counts.total && counts.total > 0) overallBar.classList.add('full');
+  else overallBar.classList.remove('full');
 
   const app = document.getElementById('app');
   app.innerHTML = '';
 
-    const rootUl = document.createElement('ul');
-    rootUl.className = 'tree';
-    app.appendChild(rootUl);
+  if (!DATA.categories) return;
 
-    for (const cat of DATA.categories) {{
-        let catHasAny = false;
-        for (const grp of cat.groups) {{
-            for (const a of grp.achievements) {{
-                const isDone = completed.has(a.id);
-                const match = textIncludes(a.name, q) || textIncludes(a.desc, q);
-                if (match && !(onlyTodo && isDone)) {{
-                    catHasAny = true;
-                    break;
-                }}
+  const rootUl = document.createElement('ul');
+  rootUl.className = 'tree';
+  app.appendChild(rootUl);
+
+  for (const cat of DATA.categories) {{
+    let catHasAny = false;
+    for (const grp of cat.groups) {{
+        for (const a of grp.achievements) {{
+            const isDone = completed.has(a.id);
+            const match = textIncludes(a.name, q) || textIncludes(a.desc, q);
+            if (match && !(onlyTodo && isDone)) {{
+                catHasAny = true;
+                break;
             }}
-            if (catHasAny) break;
         }}
-        if ((q || onlyTodo) && !catHasAny) continue;
+        if (catHasAny) break;
+    }}
+    if ((q || onlyTodo) && !catHasAny) continue;
 
-        const liCat = document.createElement('li');
-        const catDetails = document.createElement('details');
-        const catId = String(cat.id);
-        catDetails.open = q ? true : openCats.has(catId);
-        catDetails.addEventListener('toggle', () => {{
-            const set = loadOpenSet(OPEN_CAT_KEY);
-            if (catDetails.open) set.add(catId); else set.delete(catId);
-            saveOpenSet(OPEN_CAT_KEY, set);
+    const liCat = document.createElement('li');
+    const catDetails = document.createElement('details');
+    const catId = String(cat.id);
+    catDetails.open = q ? true : openCats.has(catId);
+    catDetails.addEventListener('toggle', () => {{
+        const set = loadOpenSet(OPEN_CAT_KEY);
+        if (catDetails.open) set.add(catId); else set.delete(catId);
+        saveOpenSet(OPEN_CAT_KEY, set);
+    }});
+
+    const catSummary = document.createElement('summary');
+    catSummary.innerHTML = CHEVRON_SVG;
+    const catCounts = computeNodeCounts(cat, completed);
+
+    const catText = document.createElement('span');
+    catText.className = 'summary-text';
+    catText.textContent = cat.name;
+    const catCount = document.createElement('span');
+    catCount.className = 'summary-count';
+    catCount.textContent = catCounts.done + ' / ' + catCounts.total;
+
+    catSummary.appendChild(catText);
+    catSummary.appendChild(catCount);
+    catSummary.appendChild(makeProgressSpan(catCounts.done, catCounts.total));
+    catDetails.appendChild(catSummary);
+
+    const catNode = document.createElement('div');
+    catNode.className = 'node';
+
+    for (const grp of cat.groups) {{
+        let grpHasAny = false;
+        for (const a of grp.achievements) {{
+            const isDone = completed.has(a.id);
+            const match = textIncludes(a.name, q) || textIncludes(a.desc, q);
+            if (match && !(onlyTodo && isDone)) {{
+                grpHasAny = true;
+                break;
+            }}
+        }}
+        if ((q || onlyTodo) && !grpHasAny) continue;
+
+        const grpDetails = document.createElement('details');
+        const grpId = String(grp.id);
+        grpDetails.open = q ? true : openGrps.has(grpId);
+        grpDetails.addEventListener('toggle', () => {{
+            const set = loadOpenSet(OPEN_GRP_KEY);
+            if (grpDetails.open) set.add(grpId); else set.delete(grpId);
+            saveOpenSet(OPEN_GRP_KEY, set);
         }});
 
-        const catSummary = document.createElement('summary');
-        const catCounts = computeNodeCounts(cat, completed);
+        const grpSummary = document.createElement('summary');
+        grpSummary.innerHTML = CHEVRON_SVG;
+        const grpCounts = computeGroupCounts(grp, completed);
 
-        const catText = document.createElement('span');
-        catText.className = 'summary-text';
-        catText.textContent = cat.name;
-        const catCount = document.createElement('span');
-        catCount.className = 'summary-count';
-        catCount.textContent = catCounts.done + '/' + catCounts.total;
-        catSummary.appendChild(catText);
-        catSummary.appendChild(catCount);
-        catSummary.appendChild(makeProgressSpan(catCounts.done, catCounts.total));
-        catDetails.appendChild(catSummary);
+        const grpText = document.createElement('span');
+        grpText.className = 'summary-text';
+        grpText.textContent = grp.name;
+        const grpCount = document.createElement('span');
+        grpCount.className = 'summary-count';
+        grpCount.textContent = grpCounts.done + ' / ' + grpCounts.total;
 
-        const catNode = document.createElement('div');
-        catNode.className = 'node';
+        grpSummary.appendChild(grpText);
+        grpSummary.appendChild(grpCount);
+        grpSummary.appendChild(makeProgressSpan(grpCounts.done, grpCounts.total));
+        grpDetails.appendChild(grpSummary);
 
-        for (const grp of cat.groups) {{
-            let grpHasAny = false;
-            for (const a of grp.achievements) {{
-                const isDone = completed.has(a.id);
-                const match = textIncludes(a.name, q) || textIncludes(a.desc, q);
-                if (match && !(onlyTodo && isDone)) {{
-                    grpHasAny = true;
-                    break;
-                }}
-            }}
-            if ((q || onlyTodo) && !grpHasAny) continue;
+        const ul = document.createElement('ul');
+        ul.className = 'ach-list';
 
-            const grpDetails = document.createElement('details');
-            const grpId = String(grp.id);
-            grpDetails.open = q ? true : openGrps.has(grpId);
-            grpDetails.addEventListener('toggle', () => {{
-                const set = loadOpenSet(OPEN_GRP_KEY);
-                if (grpDetails.open) set.add(grpId); else set.delete(grpId);
-                saveOpenSet(OPEN_GRP_KEY, set);
+        for (const a of grp.achievements) {{
+            const isDone = completed.has(a.id);
+            const match = textIncludes(a.name, q) || textIncludes(a.desc, q);
+            if (!match) continue;
+            if (onlyTodo && isDone) continue;
+
+            const li = document.createElement('li');
+            li.className = 'ach-item' + (isDone ? ' done' : '');
+
+            // Allow clicking the whole item to toggle
+            li.addEventListener('click', () => {{
+                const set = loadCompleted();
+                if (set.has(a.id)) set.delete(a.id); else set.add(a.id);
+                saveCompleted(set);
+                render();
             }});
 
-            const grpSummary = document.createElement('summary');
-            const grpCounts = computeGroupCounts(grp, completed);
+            const customCb = document.createElement('div');
+            customCb.className = 'ach-item-checkbox';
+            customCb.innerHTML = CHECK_SVG;
 
-            const grpText = document.createElement('span');
-            grpText.className = 'summary-text';
-            grpText.textContent = grp.name;
-            const grpCount = document.createElement('span');
-            grpCount.className = 'summary-count';
-            grpCount.textContent = grpCounts.done + '/' + grpCounts.total;
-            grpSummary.appendChild(grpText);
-            grpSummary.appendChild(grpCount);
-            grpSummary.appendChild(makeProgressSpan(grpCounts.done, grpCounts.total));
-            grpDetails.appendChild(grpSummary);
+            const content = document.createElement('div');
+            content.className = 'ach-content';
+            const title = document.createElement('div');
+            title.className = 'ach-title';
+            title.appendChild(highlightText(a.name || a.name_key || '', q));
+            const desc = document.createElement('div');
+            desc.className = 'ach-desc';
+            desc.appendChild(highlightText(a.desc || a.desc_key || '', q));
+            content.appendChild(title);
+            content.appendChild(desc);
 
-            const ul = document.createElement('ul');
-            ul.className = 'ach-list';
-
-            for (const a of grp.achievements) {{
-                const isDone = completed.has(a.id);
-                const match = textIncludes(a.name, q) || textIncludes(a.desc, q);
-                if (!match) continue;
-                if (onlyTodo && isDone) continue;
-
-                const li = document.createElement('li');
-                li.className = 'ach-item' + (isDone ? ' done' : '');
-
-                const cb = document.createElement('input');
-                cb.type = 'checkbox';
-                cb.checked = isDone;
-                cb.addEventListener('change', () => {{
-                    const set = loadCompleted();
-                    if (cb.checked) set.add(a.id); else set.delete(a.id);
-                    saveCompleted(set);
-                    render();
-                }});
-
-                const content = document.createElement('div');
-                const title = document.createElement('div');
-                title.className = 'ach-title';
-                title.appendChild(highlightText(a.name || a.name_key || '', q));
-                const desc = document.createElement('div');
-                desc.className = 'ach-desc';
-                desc.appendChild(highlightText(a.desc || a.desc_key || '', q));
-                content.appendChild(title);
-                content.appendChild(desc);
-
-                li.appendChild(cb);
-                li.appendChild(content);
-                ul.appendChild(li);
-            }}
-
-            grpDetails.appendChild(ul);
-            catNode.appendChild(grpDetails);
+            li.appendChild(customCb);
+            li.appendChild(content);
+            ul.appendChild(li);
         }}
 
-        catDetails.appendChild(catNode);
-        liCat.appendChild(catDetails);
-        rootUl.appendChild(liCat);
+        grpDetails.appendChild(ul);
+        catNode.appendChild(grpDetails);
     }}
+
+    catDetails.appendChild(catNode);
+    liCat.appendChild(catDetails);
+    rootUl.appendChild(liCat);
+  }}
 }}
+
+/* Scroll to top logic */
+const scrollTopBtn = document.getElementById('scrollTopBtn');
+window.addEventListener('scroll', () => {{
+  if (window.scrollY > 300) {{
+    scrollTopBtn.classList.add('visible');
+  }} else {{
+    scrollTopBtn.classList.remove('visible');
+  }}
+}});
+scrollTopBtn.addEventListener('click', () => {{
+  window.scrollTo({{ top: 0, behavior: 'smooth' }});
+}});
 
 document.getElementById('q').addEventListener('input', render);
 document.getElementById('onlyTodo').addEventListener('change', render);
