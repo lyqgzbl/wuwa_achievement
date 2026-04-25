@@ -16,46 +16,28 @@ def render_html(dataset: dict[str, Any]) -> str:
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>鸣潮 成就统计</title>
   <style>
-    /* === Theme variables === */
     :root, [data-theme="light"] {{
-      /* 基础背景 (极浅暖灰, 让页面不显得冷冰冰) */
       --bg: #fafafa;
       --bg-alpha: rgba(250, 250, 250, 0.65);
-
-      /* 文字颜色 (深炭灰 & 柔和灰) */
       --text: #2d3748;
       --text-muted: #718096;
-
-      /* 卡片背景 (纯白, 用于区分层级) */
       --card-bg: #ffffff;
       --card-hover: #f7fafc;
       --border: rgba(0, 0, 0, 0.06);
-
-      /* 标题区与折叠栏 */
       --summary-bg: #ffffff;
       --summary-hover: #f1f5f9;
-
-      /* 强调色：蓝紫渐变/活力蓝 (鸣潮/数据感) */
       --accent: #4f46e5;
       --accent-light: rgba(79, 70, 229, 0.1);
-
-      /* 进度条：从灰到活力蓝紫到碧绿 */
       --progress-bg: #e2e8f0;
       --progress-fill: linear-gradient(90deg, #6366f1, #4f46e5);
       --progress-full: linear-gradient(90deg, #10b981, #059669);
-
-      /* 搜索高亮：柔和的柠檬黄 */
       --mark-bg: #fde047;
       --mark-text: #854d0e;
-
-      /* 按钮与输入框 */
       --btn-bg: #ffffff;
       --btn-hover: #f8fafc;
       --btn-border: rgba(0, 0, 0, 0.1);
       --input-bg: #ffffff;
       --input-border: rgba(0, 0, 0, 0.1);
-
-      /* 其他UI状态 */
       --done-opacity: 0.55;
       --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.02);
       --shadow-md: 0 8px 16px -4px rgba(0, 0, 0, 0.05), 0 4px 8px -2px rgba(0, 0, 0, 0.02);
@@ -65,44 +47,27 @@ def render_html(dataset: dict[str, Any]) -> str:
       color-scheme: light;
     }}
     [data-theme="dark"] {{
-      /* 基础背景 (极暗的蓝灰, 增加深邃感) */
       --bg: #0f172a;
       --bg-alpha: rgba(15, 23, 42, 0.65);
-
-      /* 文字颜色 (亮灰 & 暗灰) */
       --text: #f1f5f9;
       --text-muted: #94a3b8;
-
-      /* 卡片背景 (带微弱蓝调的深色) */
       --card-bg: #1e293b;
       --card-hover: #27344c;
       --border: rgba(255, 255, 255, 0.06);
-
-      /* 标题区与折叠栏 */
       --summary-bg: #1e293b;
       --summary-hover: #2b3b54;
-
-      /* 强调色：赛博青/霓虹蓝 (契合鸣潮科幻风) */
       --accent: #38bdf8;
       --accent-light: rgba(56, 189, 248, 0.15);
-
-      /* 进度条：从深灰到亮青到荧光绿 */
       --progress-bg: #334155;
       --progress-fill: linear-gradient(90deg, #0ea5e9, #38bdf8);
       --progress-full: linear-gradient(90deg, #22c55e, #4ade80);
-
-      /* 搜索高亮：柔和的橙棕色背景配亮黄字 */
       --mark-bg: #b45309;
       --mark-text: #fef08a;
-
-      /* 按钮与输入框 */
       --btn-bg: #1e293b;
       --btn-hover: #293952;
       --btn-border: rgba(255, 255, 255, 0.1);
       --input-bg: #0f172a;
       --input-border: rgba(255, 255, 255, 0.1);
-
-      /* 其他UI状态 */
       --done-opacity: 0.45;
       --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.3);
       --shadow-md: 0 10px 20px -5px rgba(0, 0, 0, 0.4), 0 6px 10px -3px rgba(0, 0, 0, 0.2);
@@ -113,19 +78,36 @@ def render_html(dataset: dict[str, Any]) -> str:
     }}
     @media (prefers-color-scheme: dark) {{
       [data-theme="auto"] {{
-        --bg: #0f172a; --bg-alpha: rgba(15, 23, 42, 0.65); --text: #f1f5f9; --text-muted: #94a3b8;
-        --card-bg: #1e293b; --card-hover: #27344c; --border: rgba(255, 255, 255, 0.06);
-        --summary-bg: #1e293b; --summary-hover: #2b3b54; --accent: #38bdf8; --accent-light: rgba(56, 189, 248, 0.15);
-        --progress-bg: #334155; --progress-fill: linear-gradient(90deg, #0ea5e9, #38bdf8); --progress-full: linear-gradient(90deg, #22c55e, #4ade80);
-        --mark-bg: #b45309; --mark-text: #fef08a; --btn-bg: #1e293b; --btn-hover: #293952;
-        --btn-border: rgba(255, 255, 255, 0.1); --input-bg: #0f172a; --input-border: rgba(255, 255, 255, 0.1);
-        --done-opacity: 0.45; --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.3); --shadow-md: 0 10px 20px -5px rgba(0, 0, 0, 0.4), 0 6px 10px -3px rgba(0, 0, 0, 0.2);
-        --badge-bg: rgba(56, 189, 248, 0.15); --badge-text: #38bdf8;
-        --card-gradient: linear-gradient(145deg, #1e293b, #151e2f); color-scheme: dark;
+        --bg: #0f172a;
+        --bg-alpha: rgba(15, 23, 42, 0.65);
+        --text: #f1f5f9;
+        --text-muted: #94a3b8;
+        --card-bg: #1e293b;
+        --card-hover: #27344c;
+        --border: rgba(255, 255, 255, 0.06);
+        --summary-bg: #1e293b;
+        --summary-hover: #2b3b54;
+        --accent: #38bdf8;
+        --accent-light: rgba(56, 189, 248, 0.15);
+        --progress-bg: #334155;
+        --progress-fill: linear-gradient(90deg, #0ea5e9, #38bdf8);
+        --progress-full: linear-gradient(90deg, #22c55e, #4ade80);
+        --mark-bg: #b45309;
+        --mark-text: #fef08a;
+        --btn-bg: #1e293b;
+        --btn-hover: #293952;
+        --btn-border: rgba(255, 255, 255, 0.1);
+        --input-bg: #0f172a;
+        --input-border: rgba(255, 255, 255, 0.1);
+        --done-opacity: 0.45;
+        --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.3);
+        --shadow-md: 0 10px 20px -5px rgba(0, 0, 0, 0.4), 0 6px 10px -3px rgba(0, 0, 0, 0.2);
+        --badge-bg: rgba(56, 189, 248, 0.15);
+        --badge-text: #38bdf8;
+        --card-gradient: linear-gradient(145deg, #1e293b, #151e2f);
+        color-scheme: dark;
       }}
     }}
-
-    /* === Base === */
     * {{ box-sizing: border-box; }}
     body {{
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, 'PingFang SC', sans-serif;
@@ -136,24 +118,25 @@ def render_html(dataset: dict[str, Any]) -> str:
       -webkit-font-smoothing: antialiased;
     }}
     .container {{ max-width: 820px; margin: 0 auto; position: relative; }}
-
-    /* === Sticky Header Wrapper === */
     .sticky-wrapper {{
       position: sticky; top: 0; z-index: 100;
       background: var(--bg-alpha);
       backdrop-filter: blur(24px) saturate(200%); -webkit-backdrop-filter: blur(24px) saturate(200%);
       margin: 0 -16px 20px -16px; padding: 16px 16px 12px 16px;
       border-bottom: 1px solid var(--border);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }}
+    .sticky-wrapper.scrolled {{
+      padding: 8px 16px 8px 16px;
+      box-shadow: var(--shadow-sm);
     }}
     .sticky-container {{ max-width: 820px; margin: 0 auto; }}
-
-    /* === Header === */
-    header {{ display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }}
-    header h2 {{ margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }}
+    header {{ display: flex; gap: 16px; align-items: center; flex-wrap: nowrap; margin-bottom: 12px; transition: all 0.4s ease; }}
+    .sticky-wrapper.scrolled header {{ margin-bottom: 6px; }}
+    header h2 {{ margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.5px; transition: all 0.4s ease; white-space: nowrap; overflow: hidden; }}
+    .sticky-wrapper.scrolled header h2 {{ width: 0; margin: 0; padding: 0; opacity: 0; font-size: 0; }}
     .overall-wrap {{ display: flex; align-items: center; gap: 12px; flex: 1; min-width: 200px; }}
     .overall-text {{ font-variant-numeric: tabular-nums; font-size: 14px; font-weight: 500; white-space: nowrap; }}
-
-    /* === Progress bars === */
     .progress-bar {{
       flex: 1; height: 8px; min-width: 80px;
       background: var(--progress-bg); border-radius: 999px; overflow: hidden;
@@ -173,11 +156,15 @@ def render_html(dataset: dict[str, Any]) -> str:
       transition: width 0.8s ease-out, background 0.5s ease;
     }}
     .summary-progress-inner.full {{ background: var(--progress-full); }}
-
-    /* === Toolbar === */
-    .toolbar {{ display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }}
-
-    .search-wrap {{ position: relative; flex: 1; min-width: 200px; }}
+    .toolbar {{
+      display: flex; gap: 10px; align-items: center; flex-wrap: nowrap;
+      transition: all 0.4s ease;
+      overflow-x: auto; padding-bottom: 2px;
+      -webkit-overflow-scrolling: touch; scrollbar-width: none;
+    }}
+    .toolbar::-webkit-scrollbar {{ display: none; }}
+    .sticky-wrapper.scrolled .toolbar {{ gap: 8px; }}
+    .search-wrap {{ position: relative; flex: 1; min-width: 240px; }}
     .search-icon {{
       position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
       color: var(--text-muted); pointer-events: none;
@@ -188,40 +175,41 @@ def render_html(dataset: dict[str, Any]) -> str:
       background: var(--input-bg); color: var(--text); font-size: 14px; outline: none;
       transition: all 0.3s ease; box-shadow: var(--shadow-sm);
     }}
+    .sticky-wrapper.scrolled input[type="search"] {{ padding: 8px 12px 8px 32px; font-size: 13px; border-radius: 8px; }}
     input[type="search"]:focus {{
       border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light);
     }}
     input[type="search"]::placeholder {{ color: var(--text-muted); }}
-
     .pill {{
       display: inline-flex; align-items: center; gap: 6px;
       padding: 8px 14px; border: 1px solid var(--btn-border); border-radius: 999px;
       background: var(--btn-bg); color: var(--text); font-size: 14px; font-weight: 500;
       cursor: pointer; user-select: none; transition: all 0.3s ease;
-      box-shadow: var(--shadow-sm);
+      box-shadow: var(--shadow-sm); white-space: nowrap; flex-shrink: 0;
     }}
+    .sticky-wrapper.scrolled .pill {{ padding: 6px 12px; font-size: 13px; }}
     .pill:hover {{ background: var(--btn-hover); border-color: var(--text-muted); }}
-    .pill input[type="checkbox"] {{ margin: 0; accent-color: var(--accent); width: 16px; height: 16px; cursor: pointer; pointer-events: none; }}
-
+    .pill input[type="checkbox"] {{ margin: 0; accent-color: var(--accent); width: 16px; height: 16px; cursor: pointer; pointer-events: none; transition: all 0.4s ease; }}
+    .sticky-wrapper.scrolled .pill input[type="checkbox"] {{ width: 14px; height: 14px; }}
     .btn {{
       padding: 8px 14px; border: 1px solid var(--btn-border); border-radius: 10px;
       background: var(--btn-bg); color: var(--text); font-size: 14px; font-weight: 500;
       cursor: pointer; transition: all 0.3s ease; box-shadow: var(--shadow-sm);
+      white-space: nowrap; flex-shrink: 0;
     }}
+    .sticky-wrapper.scrolled .btn {{ padding: 6px 12px; font-size: 13px; border-radius: 8px; }}
     .btn:hover {{ background: var(--btn-hover); border-color: var(--text-muted); }}
-
     .btn-icon {{
       width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center;
       border: 1px solid var(--btn-border); border-radius: 10px;
       background: var(--btn-bg); color: var(--text); font-size: 18px;
       cursor: pointer; transition: all 0.3s ease; box-shadow: var(--shadow-sm);
+      flex-shrink: 0;
     }}
+    .sticky-wrapper.scrolled .btn-icon {{ width: 30px; height: 30px; font-size: 16px; border-radius: 8px; }}
     .btn-icon:hover {{ background: var(--btn-hover); border-color: var(--text-muted); }}
-
-    /* === Tree & Accordion === */
     .tree {{ list-style: none; padding: 0; margin: 0; }}
     .tree > li {{ margin-bottom: 16px; }}
-
     details {{ margin: 0; border: 1px solid var(--border); border-radius: 14px; background: var(--summary-bg); box-shadow: var(--shadow-sm); overflow: hidden; transition: box-shadow 0.3s ease, border-color 0.3s ease; }}
     details:hover {{ box-shadow: var(--shadow-md); border-color: var(--accent-light); }}
     summary {{
@@ -231,26 +219,21 @@ def render_html(dataset: dict[str, Any]) -> str:
     }}
     summary:hover {{ background: var(--summary-hover); }}
     summary::-webkit-details-marker {{ display: none; }}
-
     .chevron {{
       width: 20px; height: 20px; flex-shrink: 0; color: var(--text-muted);
       transition: transform 0.4s ease;
     }}
     details[open] > summary .chevron {{ transform: rotate(90deg); }}
-
     .summary-text {{ flex: 1; }}
     .summary-count {{
       font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums;
       background: var(--badge-bg); color: var(--badge-text);
       padding: 2px 8px; border-radius: 999px; white-space: nowrap;
     }}
-
     .node {{ border-top: 1px solid var(--border); background: var(--bg); padding: 12px; }}
     .node details {{ margin-bottom: 8px; border-radius: 12px; box-shadow: none; border-color: var(--border); }}
     .node details:last-child {{ margin-bottom: 0; }}
     .node summary {{ font-size: 15px; padding: 10px 14px; }}
-
-    /* === Achievement list === */
     .ach-list {{ list-style: none; padding: 8px; margin: 0; background: var(--bg); }}
     .ach-item {{
       display: flex; gap: 14px; padding: 14px; margin-bottom: 8px;
@@ -260,8 +243,6 @@ def render_html(dataset: dict[str, Any]) -> str:
     }}
     .ach-item:last-child {{ margin-bottom: 0; }}
     .ach-item:hover {{ transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--accent-light); }}
-
-    /* Custom Checkbox Animation */
     .ach-item-checkbox {{
       flex-shrink: 0; width: 22px; height: 22px; margin-top: 2px;
       border: 2px solid var(--text-muted); border-radius: 6px;
@@ -274,20 +255,13 @@ def render_html(dataset: dict[str, Any]) -> str:
     }}
     .ach-item.done .ach-item-checkbox {{ background: var(--accent); border-color: var(--accent); }}
     .ach-item.done .ach-item-checkbox svg {{ opacity: 1; transform: scale(1); }}
-
     .ach-content {{ flex: 1; transition: opacity 0.4s ease; }}
     .ach-title {{ font-weight: 600; font-size: 15px; transition: color 0.4s ease; }}
     .ach-desc {{ font-size: 13px; color: var(--text-muted); white-space: pre-wrap; margin-top: 4px; line-height: 1.5; }}
-
-    /* === Done state === */
     .ach-item.done {{ background: var(--card-bg); opacity: var(--done-opacity); box-shadow: none; border-color: transparent; }}
     .ach-item.done:hover {{ transform: none; box-shadow: none; border-color: transparent; }}
     .ach-item.done .ach-title {{ text-decoration: line-through; color: var(--text-muted); }}
-
-    /* === Search highlight === */
     mark {{ background: var(--mark-bg); color: var(--mark-text); border-radius: 3px; padding: 0 2px; font-weight: 500; }}
-
-    /* === Scroll to Top === */
     .scroll-top {{
       position: fixed; bottom: 24px; right: 24px; z-index: 90;
       width: 44px; height: 44px; border-radius: 50%;
@@ -299,19 +273,31 @@ def render_html(dataset: dict[str, Any]) -> str:
     }}
     .scroll-top.visible {{ opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }}
     .scroll-top:hover {{ background: var(--btn-hover); transform: translateY(-2px) scale(1.05); }}
-
-    /* === Mobile === */
     @media (max-width: 600px) {{
-      .sticky-wrapper {{ margin: 0 -16px 16px -16px; padding: 12px 16px; }}
+      body {{ padding: 0 12px 20px 12px; }}
+      .sticky-wrapper {{ margin: 0 -12px 16px -12px; padding: 12px 12px 8px 12px; }}
+      .sticky-wrapper.scrolled {{ padding: 6px 12px 6px 12px; }}
+      header {{ gap: 10px; margin-bottom: 10px; }}
+      .sticky-wrapper.scrolled header {{ margin-bottom: 6px; }}
+      header h2 {{ font-size: 20px; }}
+      .overall-wrap {{ min-width: 0; }}
+      .overall-text {{ font-size: 13px; }}
+      .progress-bar {{ min-width: 60px; }}
       .toolbar {{ gap: 8px; }}
-      .search-wrap {{ width: 100%; min-width: 100%; flex: none; }}
-      .pill, .btn {{ flex: 1; justify-content: center; padding: 8px 10px; font-size: 13px; }}
-      .btn-icon {{ flex-shrink: 0; }}
-      summary {{ padding: 12px 14px; font-size: 15px; }}
+      .sticky-wrapper.scrolled .toolbar {{ gap: 6px; }}
+      .search-wrap {{ flex: 1 0 150px; min-width: 150px; width: auto; }}
+      .sticky-wrapper.scrolled .search-wrap {{ flex: 1 0 130px; min-width: 130px; }}
+      .sticky-wrapper.scrolled input[type="search"] {{ padding: 6px 10px 6px 28px; font-size: 13px; }}
+      .sticky-wrapper.scrolled .search-icon {{ width: 14px; height: 14px; left: 8px; }}
+      .pill, .btn {{ padding: 6px 12px; font-size: 13px; }}
+      .sticky-wrapper.scrolled .pill, .sticky-wrapper.scrolled .btn {{ padding: 4px 10px; font-size: 12px; }}
+      .btn-icon {{ width: 32px; height: 32px; font-size: 16px; }}
+      .sticky-wrapper.scrolled .btn-icon {{ width: 28px; height: 28px; font-size: 14px; }}
+      summary {{ padding: 10px 12px; font-size: 15px; }}
       .node {{ padding: 8px; }}
-      .ach-item {{ padding: 12px; gap: 10px; }}
-      .ach-list {{ padding: 4px; }}
-      .summary-progress {{ width: 48px; }}
+      .ach-item {{ padding: 10px; gap: 10px; }}
+      .ach-list {{ padding: 2px; }}
+      .summary-progress {{ width: 40px; }}
       .scroll-top {{ bottom: 16px; right: 16px; width: 40px; height: 40px; }}
     }}
   </style>
@@ -359,10 +345,11 @@ const THEME_KEY = 'ww_achievement_theme_v1';
 const CHEVRON_SVG = `<svg class="chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
 const CHECK_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
 
-/* === Theme toggle === */
-const THEME_ICONS = {{ auto: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>`,
-                       light: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`,
-                       dark: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>` }};
+const THEME_ICONS = {{
+  auto: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>`,
+  light: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`,
+  dark: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`,
+}};
 const THEME_CYCLE = ['auto', 'light', 'dark'];
 
 function getTheme() {{
@@ -385,7 +372,6 @@ function cycleTheme() {{
 applyTheme(getTheme());
 document.getElementById('themeBtn').addEventListener('click', cycleTheme);
 
-/* === Storage helpers === */
 function loadCompleted() {{
   try {{
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -402,68 +388,66 @@ function saveCompleted(set) {{
 }}
 
 function loadOpenSet(key) {{
-    try {{
-        const raw = localStorage.getItem(key);
-        if (!raw) return new Set();
-        const arr = JSON.parse(raw);
-        return new Set(Array.isArray(arr) ? arr.map(String) : []);
-    }} catch {{
-        return new Set();
-    }}
+  try {{
+    const raw = localStorage.getItem(key);
+    if (!raw) return new Set();
+    const arr = JSON.parse(raw);
+    return new Set(Array.isArray(arr) ? arr.map(String) : []);
+  }} catch {{
+    return new Set();
+  }}
 }}
 
 function saveOpenSet(key, set) {{
-    localStorage.setItem(key, JSON.stringify(Array.from(set)));
+  localStorage.setItem(key, JSON.stringify(Array.from(set)));
 }}
 
-/* === Export / Import === */
 function exportProgress() {{
-    const payload = {{
-        schema: EXPORT_KEY,
-        locale: DATA.locale || 'zh-CN',
-        exportedAt: new Date().toISOString(),
-        completed: Array.from(loadCompleted()),
-        openCategories: Array.from(loadOpenSet(OPEN_CAT_KEY)),
-        openGroups: Array.from(loadOpenSet(OPEN_GRP_KEY)),
-    }};
+  const payload = {{
+    schema: EXPORT_KEY,
+    locale: DATA.locale || 'zh-CN',
+    exportedAt: new Date().toISOString(),
+    completed: Array.from(loadCompleted()),
+    openCategories: Array.from(loadOpenSet(OPEN_CAT_KEY)),
+    openGroups: Array.from(loadOpenSet(OPEN_GRP_KEY)),
+  }};
 
-    const blob = new Blob([JSON.stringify(payload, null, 2)], {{ type: 'application/json' }});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'ww_achievement_progress.json';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {{ type: 'application/json' }});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'ww_achievement_progress.json';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
 }}
 
 async function importProgressFromFile(file) {{
-    const text = await file.text();
-    let payload;
-    try {{
-        payload = JSON.parse(text);
-    }} catch {{
-        alert('\u5bfc\u5165\u5931\u8d25\uff1a\u4e0d\u662f\u6709\u6548\u7684 JSON \u6587\u4ef6');
-        return;
-    }}
+  const text = await file.text();
+  let payload;
+  try {{
+    payload = JSON.parse(text);
+  }} catch {{
+    alert('\u5bfc\u5165\u5931\u8d25\uff1a\u4e0d\u662f\u6709\u6548\u7684 JSON \u6587\u4ef6');
+    return;
+  }}
 
-    if (!payload || payload.schema !== EXPORT_KEY) {{
-        alert('\u5bfc\u5165\u5931\u8d25\uff1a\u6587\u4ef6\u683c\u5f0f\u4e0d\u5339\u914d');
-        return;
-    }}
+  if (!payload || payload.schema !== EXPORT_KEY) {{
+    alert('\u5bfc\u5165\u5931\u8d25\uff1a\u6587\u4ef6\u683c\u5f0f\u4e0d\u5339\u914d');
+    return;
+  }}
 
-    const completed = Array.isArray(payload.completed) ? payload.completed : [];
-    const openCategories = Array.isArray(payload.openCategories) ? payload.openCategories : [];
-    const openGroups = Array.isArray(payload.openGroups) ? payload.openGroups : [];
+  const completed = Array.isArray(payload.completed) ? payload.completed : [];
+  const openCategories = Array.isArray(payload.openCategories) ? payload.openCategories : [];
+  const openGroups = Array.isArray(payload.openGroups) ? payload.openGroups : [];
 
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(completed));
-    localStorage.setItem(OPEN_CAT_KEY, JSON.stringify(openCategories.map(String)));
-    localStorage.setItem(OPEN_GRP_KEY, JSON.stringify(openGroups.map(String)));
-    render();
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(completed));
+  localStorage.setItem(OPEN_CAT_KEY, JSON.stringify(openCategories.map(String)));
+  localStorage.setItem(OPEN_GRP_KEY, JSON.stringify(openGroups.map(String)));
+  render();
 }}
 
-/* === Search & count helpers === */
 function textIncludes(hay, needle) {{
   if (!needle) return true;
   return (hay || '').toLowerCase().includes(needle);
@@ -504,40 +488,39 @@ function computeCounts(categories, completed) {{
 }}
 
 function computeNodeCounts(cat, completed) {{
-    let total = 0;
-    let done = 0;
-    for (const grp of cat.groups) {{
-        for (const a of grp.achievements) {{
-            total++;
-            if (completed.has(a.id)) done++;
-        }}
+  let total = 0;
+  let done = 0;
+  for (const grp of cat.groups) {{
+    for (const a of grp.achievements) {{
+      total++;
+      if (completed.has(a.id)) done++;
     }}
-    return {{total, done}};
+  }}
+  return {{total, done}};
 }}
 
 function computeGroupCounts(grp, completed) {{
-    let total = 0;
-    let done = 0;
-    for (const a of grp.achievements) {{
-        total++;
-        if (completed.has(a.id)) done++;
-    }}
-    return {{total, done}};
+  let total = 0;
+  let done = 0;
+  for (const a of grp.achievements) {{
+    total++;
+    if (completed.has(a.id)) done++;
+  }}
+  return {{total, done}};
 }}
 
 function makeProgressSpan(done, total) {{
-    const wrap = document.createElement('span');
-    wrap.className = 'summary-progress';
-    const inner = document.createElement('span');
-    inner.className = 'summary-progress-inner';
-    const pct = total > 0 ? (done / total * 100) : 0;
-    inner.style.width = pct + '%';
-    if (done === total && total > 0) inner.classList.add('full');
-    wrap.appendChild(inner);
-    return wrap;
+  const wrap = document.createElement('span');
+  wrap.className = 'summary-progress';
+  const inner = document.createElement('span');
+  inner.className = 'summary-progress-inner';
+  const pct = total > 0 ? (done / total * 100) : 0;
+  inner.style.width = pct + '%';
+  if (done === total && total > 0) inner.classList.add('full');
+  wrap.appendChild(inner);
+  return wrap;
 }}
 
-/* === Main render === */
 function render() {{
   const completed = loadCompleted();
   const openCats = loadOpenSet(OPEN_CAT_KEY);
@@ -565,15 +548,15 @@ function render() {{
   for (const cat of DATA.categories) {{
     let catHasAny = false;
     for (const grp of cat.groups) {{
-        for (const a of grp.achievements) {{
-            const isDone = completed.has(a.id);
-            const match = textIncludes(a.name, q) || textIncludes(a.desc, q);
-            if (match && !(onlyTodo && isDone)) {{
-                catHasAny = true;
-                break;
-            }}
+      for (const a of grp.achievements) {{
+        const isDone = completed.has(a.id);
+        const match = textIncludes(a.name, q) || textIncludes(a.desc, q);
+        if (match && !(onlyTodo && isDone)) {{
+          catHasAny = true;
+          break;
         }}
-        if (catHasAny) break;
+      }}
+      if (catHasAny) break;
     }}
     if ((q || onlyTodo) && !catHasAny) continue;
 
@@ -582,9 +565,9 @@ function render() {{
     const catId = String(cat.id);
     catDetails.open = q ? true : openCats.has(catId);
     catDetails.addEventListener('toggle', () => {{
-        const set = loadOpenSet(OPEN_CAT_KEY);
-        if (catDetails.open) set.add(catId); else set.delete(catId);
-        saveOpenSet(OPEN_CAT_KEY, set);
+      const set = loadOpenSet(OPEN_CAT_KEY);
+      if (catDetails.open) set.add(catId); else set.delete(catId);
+      saveOpenSet(OPEN_CAT_KEY, set);
     }});
 
     const catSummary = document.createElement('summary');
@@ -607,84 +590,83 @@ function render() {{
     catNode.className = 'node';
 
     for (const grp of cat.groups) {{
-        let grpHasAny = false;
-        for (const a of grp.achievements) {{
-            const isDone = completed.has(a.id);
-            const match = textIncludes(a.name, q) || textIncludes(a.desc, q);
-            if (match && !(onlyTodo && isDone)) {{
-                grpHasAny = true;
-                break;
-            }}
+      let grpHasAny = false;
+      for (const a of grp.achievements) {{
+        const isDone = completed.has(a.id);
+        const match = textIncludes(a.name, q) || textIncludes(a.desc, q);
+        if (match && !(onlyTodo && isDone)) {{
+          grpHasAny = true;
+          break;
         }}
-        if ((q || onlyTodo) && !grpHasAny) continue;
+      }}
+      if ((q || onlyTodo) && !grpHasAny) continue;
 
-        const grpDetails = document.createElement('details');
-        const grpId = String(grp.id);
-        grpDetails.open = q ? true : openGrps.has(grpId);
-        grpDetails.addEventListener('toggle', () => {{
-            const set = loadOpenSet(OPEN_GRP_KEY);
-            if (grpDetails.open) set.add(grpId); else set.delete(grpId);
-            saveOpenSet(OPEN_GRP_KEY, set);
+      const grpDetails = document.createElement('details');
+      const grpId = String(grp.id);
+      grpDetails.open = q ? true : openGrps.has(grpId);
+      grpDetails.addEventListener('toggle', () => {{
+        const set = loadOpenSet(OPEN_GRP_KEY);
+        if (grpDetails.open) set.add(grpId); else set.delete(grpId);
+        saveOpenSet(OPEN_GRP_KEY, set);
+      }});
+
+      const grpSummary = document.createElement('summary');
+      grpSummary.innerHTML = CHEVRON_SVG;
+      const grpCounts = computeGroupCounts(grp, completed);
+
+      const grpText = document.createElement('span');
+      grpText.className = 'summary-text';
+      grpText.textContent = grp.name;
+      const grpCount = document.createElement('span');
+      grpCount.className = 'summary-count';
+      grpCount.textContent = grpCounts.done + ' / ' + grpCounts.total;
+
+      grpSummary.appendChild(grpText);
+      grpSummary.appendChild(grpCount);
+      grpSummary.appendChild(makeProgressSpan(grpCounts.done, grpCounts.total));
+      grpDetails.appendChild(grpSummary);
+
+      const ul = document.createElement('ul');
+      ul.className = 'ach-list';
+
+      for (const a of grp.achievements) {{
+        const isDone = completed.has(a.id);
+        const match = textIncludes(a.name, q) || textIncludes(a.desc, q);
+        if (!match) continue;
+        if (onlyTodo && isDone) continue;
+
+        const li = document.createElement('li');
+        li.className = 'ach-item' + (isDone ? ' done' : '');
+
+        li.addEventListener('click', () => {{
+          const set = loadCompleted();
+          if (set.has(a.id)) set.delete(a.id); else set.add(a.id);
+          saveCompleted(set);
+          render();
         }});
 
-        const grpSummary = document.createElement('summary');
-        grpSummary.innerHTML = CHEVRON_SVG;
-        const grpCounts = computeGroupCounts(grp, completed);
+        const customCb = document.createElement('div');
+        customCb.className = 'ach-item-checkbox';
+        customCb.innerHTML = CHECK_SVG;
 
-        const grpText = document.createElement('span');
-        grpText.className = 'summary-text';
-        grpText.textContent = grp.name;
-        const grpCount = document.createElement('span');
-        grpCount.className = 'summary-count';
-        grpCount.textContent = grpCounts.done + ' / ' + grpCounts.total;
+        const content = document.createElement('div');
+        content.className = 'ach-content';
+        const title = document.createElement('div');
+        title.className = 'ach-title';
+        title.appendChild(highlightText(a.name || a.name_key || '', q));
+        const desc = document.createElement('div');
+        desc.className = 'ach-desc';
+        desc.appendChild(highlightText(a.desc || a.desc_key || '', q));
+        content.appendChild(title);
+        content.appendChild(desc);
 
-        grpSummary.appendChild(grpText);
-        grpSummary.appendChild(grpCount);
-        grpSummary.appendChild(makeProgressSpan(grpCounts.done, grpCounts.total));
-        grpDetails.appendChild(grpSummary);
+        li.appendChild(customCb);
+        li.appendChild(content);
+        ul.appendChild(li);
+      }}
 
-        const ul = document.createElement('ul');
-        ul.className = 'ach-list';
-
-        for (const a of grp.achievements) {{
-            const isDone = completed.has(a.id);
-            const match = textIncludes(a.name, q) || textIncludes(a.desc, q);
-            if (!match) continue;
-            if (onlyTodo && isDone) continue;
-
-            const li = document.createElement('li');
-            li.className = 'ach-item' + (isDone ? ' done' : '');
-
-            // Allow clicking the whole item to toggle
-            li.addEventListener('click', () => {{
-                const set = loadCompleted();
-                if (set.has(a.id)) set.delete(a.id); else set.add(a.id);
-                saveCompleted(set);
-                render();
-            }});
-
-            const customCb = document.createElement('div');
-            customCb.className = 'ach-item-checkbox';
-            customCb.innerHTML = CHECK_SVG;
-
-            const content = document.createElement('div');
-            content.className = 'ach-content';
-            const title = document.createElement('div');
-            title.className = 'ach-title';
-            title.appendChild(highlightText(a.name || a.name_key || '', q));
-            const desc = document.createElement('div');
-            desc.className = 'ach-desc';
-            desc.appendChild(highlightText(a.desc || a.desc_key || '', q));
-            content.appendChild(title);
-            content.appendChild(desc);
-
-            li.appendChild(customCb);
-            li.appendChild(content);
-            ul.appendChild(li);
-        }}
-
-        grpDetails.appendChild(ul);
-        catNode.appendChild(grpDetails);
+      grpDetails.appendChild(ul);
+      catNode.appendChild(grpDetails);
     }}
 
     catDetails.appendChild(catNode);
@@ -693,9 +675,16 @@ function render() {{
   }}
 }}
 
-/* Scroll to top logic */
 const scrollTopBtn = document.getElementById('scrollTopBtn');
+const stickyWrapper = document.querySelector('.sticky-wrapper');
+
 window.addEventListener('scroll', () => {{
+  if (window.scrollY > 40) {{
+    stickyWrapper.classList.add('scrolled');
+  }} else {{
+    stickyWrapper.classList.remove('scrolled');
+  }}
+
   if (window.scrollY > 300) {{
     scrollTopBtn.classList.add('visible');
   }} else {{
@@ -709,12 +698,14 @@ scrollTopBtn.addEventListener('click', () => {{
 document.getElementById('q').addEventListener('input', render);
 document.getElementById('onlyTodo').addEventListener('change', render);
 document.getElementById('exportBtn').addEventListener('click', exportProgress);
-document.getElementById('importBtn').addEventListener('click', () => document.getElementById('importFile').click());
+document
+  .getElementById('importBtn')
+  .addEventListener('click', () => document.getElementById('importFile').click());
 document.getElementById('importFile').addEventListener('change', async (e) => {{
-    const file = e.target.files && e.target.files[0];
-    e.target.value = '';
-    if (!file) return;
-    await importProgressFromFile(file);
+  const file = e.target.files && e.target.files[0];
+  e.target.value = '';
+  if (!file) return;
+  await importProgressFromFile(file);
 }});
 render();
 </script>
