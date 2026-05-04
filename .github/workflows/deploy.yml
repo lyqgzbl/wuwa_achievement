@@ -12,13 +12,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Prepare output
+        run: |
+          mkdir -p public
+          cp docs/achievement_tracker_zh.html public/index.html
+
       - name: Deploy to Target Repo
         uses: peaceiris/actions-gh-pages@v4
         with:
           personal_token: ${{ secrets.DEPLOY_TOKEN }}
           external_repository: lyqgzbl/wuwa_pages
-          publish_branch: main
-          publish_dir: ./docs
+          publish_branch: gh-pages
+          publish_dir: ./public
           destination_dir: achievement
           keep_files: true
           user_name: 'github-actions[bot]'
